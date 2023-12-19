@@ -1,10 +1,7 @@
 use std::fs;
 use dialoguer::Input;
-use rand::rngs::OsRng;
-use rand::rngs::adapter::ReseedingRng;
-use rand::prelude::*;
-use rand_chacha::ChaCha20Core; 
 
+use rand::{Rng, thread_rng};
 fn main() {
     // Request the file path from the user
     let path = Input::<String>::new()
@@ -57,13 +54,16 @@ fn main() {
                 // Generate a random number
                 let random_number = generate_random_number().to_string();
 
+                // Generate a random number that has a different seed for each file and system time
+                //let random_number = rand::thread_rng().gen::<u64>().to_string();
+
                 // Get the file extension
                 let file_ext = file_name.split(".").last().unwrap();
 
                 // Construct the new file name
                 let new_file_name = random_number + "." + file_ext;
 
-                println!("old --> new: {file_name} -- > {new_file_name} " );
+                println!("oldie --> new: {file_name} -- > {new_file_name} " );
                 if file_name.eq(&new_file_name){ 
                     println!("....EQUAL...");
                     
@@ -81,9 +81,9 @@ fn main() {
 }
 
 // Function to generate a random number
+// Function to generate a random number
 fn generate_random_number() -> u64 {
-    // Create a new random number generator
-    let prng = ChaCha20Core::from_entropy();
-    let mut reseeding_rng = ReseedingRng::new(prng, 0, OsRng); 
-    reseeding_rng.gen::<u64>()
+    let mut rng = thread_rng();
+    rng.gen::<u64>()
 }
+
