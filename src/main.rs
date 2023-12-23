@@ -1,11 +1,28 @@
 use std::fs;
 use dialoguer::Input;
-
+use clap::{App, Arg};
 use rand::{Rng, thread_rng};
+
+
+
 fn main() {
+    let matches = App::new("File Renamer")
+        .version("1.0")
+        .author("Your Name. <your_email@example.com>")
+        .about("Renames files in a directory")
+        .arg(Arg::with_name("path")
+             .short('p')
+             .long("path")
+             .value_name("DIRECTORY_PATH")
+             .help("Sets the directory path")
+             .takes_value(true))
+        .get_matches();
+
+    let path = matches.value_of("path").unwrap_or(".");
+
     // Request the file path from the user
     let path = Input::<String>::new()
-        .with_prompt("Please enter file path")
+        .with_prompt("Please enter directory path")
         .default(".".to_string())
         .interact()
         .unwrap();
@@ -54,9 +71,6 @@ fn main() {
                 // Generate a random number
                 let random_number = generate_random_number().to_string();
 
-                // Generate a random number that has a different seed for each file and system time
-                //let random_number = rand::thread_rng().gen::<u64>().to_string();
-
                 // Get the file extension
                 let file_ext = file_name.split(".").last().unwrap();
 
@@ -80,7 +94,6 @@ fn main() {
     }
 }
 
-// Function to generate a random number
 // Function to generate a random number
 fn generate_random_number() -> u64 {
     let mut rng = thread_rng();
